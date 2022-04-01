@@ -459,24 +459,24 @@ contract Changeable is ERC721URIStorage, Ownable{
   mapping(uint => mapping(uint => bool)) public validVariations;
 
   address public treasuryWallet; 
-  /*
-  address public spotContract;
-  address public spotContract1;
-  address public spotContract2;
-  address public spotContract3;
-  address public spotContract4;
-  address public spotContract5;
-*/
+  
+  address public spotAddress;
+  address public spot1Address;
+  address public spot2Address;
+  address public spot3Address;
+  address public spot4Address;
+  address public spot5Address;
+
   Counters.Counter private supply;
 
   string private uriSuffix = ".json";
 
-  IERC721 spotContract = IERC721(spotContract);
-  IERC721 spotContract1 = IERC721(spotContract1);
-  IERC721 spotContract2 = IERC721(spotContract2);
-  IERC721 spotContract3 = IERC721(spotContract3);
-  IERC721 spotContract4 = IERC721(spotContract4);
-  IERC721 spotContract5 = IERC721(spotContract5);
+  IERC721 spotContract = IERC721(spotAddress);
+  IERC721 spot1Contract = IERC721(spot1Address);
+  IERC721 spot2Contract = IERC721(spot2Address);
+  IERC721 spot3Contract = IERC721(spot3Address);
+  IERC721 spot4Contract = IERC721(spot4Address);
+  IERC721 spot5Contract = IERC721(spot5Address);
 
   uint256 public cost = 1 ether;
 
@@ -523,10 +523,11 @@ contract Changeable is ERC721URIStorage, Ownable{
     }
     else {
       require(spotContract.balanceOf(_msgSender()) > 0 ||
-              spotContract2.balanceOf(_msgSender()) > 0 ||
-              spotContract3.balanceOf(_msgSender()) > 0 ||
-              spotContract4.balanceOf(_msgSender()) > 0 ||
-              spotContract5.balanceOf(_msgSender()) > 0, "Analog: You don't own a spot!");
+	  	      spot1Contract.balanceOf(_msgSender()) > 0 ||
+              spot2Contract.balanceOf(_msgSender()) > 0 ||
+              spot3Contract.balanceOf(_msgSender()) > 0 ||
+              spot4Contract.balanceOf(_msgSender()) > 0 ||
+              spot5Contract.balanceOf(_msgSender()) > 0, "Analog: You don't own a spot!");
       require(validVariations[_tokenID][_variationID], "Invalid Variation!");
  
  
@@ -553,46 +554,47 @@ contract Changeable is ERC721URIStorage, Ownable{
         treasuryWallet = _treasuryWallet;
     }
 
-  function setSpotContractAddress(address _spotContract)
+  function setSpotAddress(address _spotAddress)
         external
         onlyOwner
     {
-        spotContract = _spotContract;
+        spotAddress = _spotAddress;
+		spotContract = IERC721(spotAddress);
     }
 
-  function setSpotContract1Address(address _spotContract1)
+  function setSpot1Address(address _spot1Address)
         external
         onlyOwner
     {
-        spotContract1 = _spotContract1;
+        spot1Address = _spot1Address;
     }
 
-  function setSpotContract2Address(address _spotContract2)
+  function setSpot2Address(address _spot2Address)
         external
         onlyOwner
     {
-        spotContract2 = _spotContract2;
+        spot2Address = _spot2Address;
     }
 
-  function setSpotContract3Address(address _spotContract3)
+  function setSpot3Address(address _spot3Address)
         external
         onlyOwner
     {
-        spotContract3 = _spotContract3;
+        spot3Address = _spot3Address;
     }
 
-  function setSpotContract4Address(address _spotContract4)
+  function setSpot4Address(address _spot4Address)
         external
         onlyOwner
     {
-        spotContract4 = _spotContract4;
+        spot4Address = _spot4Address;
     }
 
-  function setSpotContract5Address(address _spotContract5)
+  function setSpot5Address(address _spot5Address)
         external
         onlyOwner
     {
-        spotContract5 = _spotContract5;
+        spot5Address = _spot5Address;
     }
 
   function supportsInterface(bytes4 interfaceID) public view override returns(bool) {
