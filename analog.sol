@@ -567,6 +567,7 @@ contract Changeable is ERC721URIStorage, Ownable{
         onlyOwner
     {
         spot1Address = _spot1Address;
+		spot1Contract = IERC721(spot1Address);
     }
 
   function setSpot2Address(address _spot2Address)
@@ -574,6 +575,7 @@ contract Changeable is ERC721URIStorage, Ownable{
         onlyOwner
     {
         spot2Address = _spot2Address;
+		spot2Contract = IERC721(spot2Address);
     }
 
   function setSpot3Address(address _spot3Address)
@@ -581,6 +583,7 @@ contract Changeable is ERC721URIStorage, Ownable{
         onlyOwner
     {
         spot3Address = _spot3Address;
+		spot3Contract = IERC721(spot3Address);
     }
 
   function setSpot4Address(address _spot4Address)
@@ -588,6 +591,7 @@ contract Changeable is ERC721URIStorage, Ownable{
         onlyOwner
     {
         spot4Address = _spot4Address;
+		spot4Contract = IERC721(spo4tAddress);
     }
 
   function setSpot5Address(address _spot5Address)
@@ -595,6 +599,7 @@ contract Changeable is ERC721URIStorage, Ownable{
         onlyOwner
     {
         spot5Address = _spot5Address;
+		spot5Contract = IERC721(spot5Address);
     }
 
   function supportsInterface(bytes4 interfaceID) public view override returns(bool) {
