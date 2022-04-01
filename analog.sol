@@ -591,7 +591,7 @@ contract Changeable is ERC721URIStorage, Ownable{
         onlyOwner
     {
         spot4Address = _spot4Address;
-		spot4Contract = IERC721(spo4tAddress);
+		spot4Contract = IERC721(spot4Address);
     }
 
   function setSpot5Address(address _spot5Address)
