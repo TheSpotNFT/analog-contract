@@ -517,6 +517,7 @@ contract Changeable is ERC721URIStorage, Ownable{
   }
 
   function changeVariation(uint _tokenID, uint _variationID) public payable {
+    require(msg.sender == ownerOf(_tokenID), "You don't own this NFT");
     if (_variationID == 9) {
         require(spotContract.balanceOf(_msgSender()) > 9, "not enough spots ");
 
