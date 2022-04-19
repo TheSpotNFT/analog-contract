@@ -3,7 +3,6 @@
 
 pragma solidity 0.8.11;
 
-
 library Strings {
 	function toString(uint256 value) internal pure returns(string memory) {
 		if (value == 0) return "0";
@@ -153,28 +152,6 @@ abstract contract Ownable is Context {
 		_owner = newOwner;
 
 		emit OwnershipTransferred(oldOwner, newOwner);
-	}
-}
-
-abstract contract ReentrancyGuard {
-	uint256 private constant _NOT_ENTERED = 1;
-	uint256 private constant _ENTERED = 2;
-
-	uint256 private _status;
-
-	constructor() {
-		_status = _NOT_ENTERED;
-	}
-
-
-	modifier nonReentrant() {
-		require(_status != _ENTERED, "ReentrancyGuard: reentrant call");
-
-		_status = _ENTERED;
-
-		_;
-
-		_status = _NOT_ENTERED;
 	}
 }
 
@@ -451,7 +428,7 @@ abstract contract ERC721URIStorage is ERC721 {
 }
 
 
-contract Changeable is ERC721URIStorage, Ownable{
+contract Analog is ERC721URIStorage, Ownable{
   using Strings for uint256;
   using Counters for Counters.Counter;
 
@@ -479,14 +456,15 @@ contract Changeable is ERC721URIStorage, Ownable{
   IERC721 spot5Contract = IERC721(spot5Address);
 
   uint256 public cost = 1 ether;
+  uint256 public minSpots = 10; 
 
 
-  constructor() ERC721("Changeable", "CHANGE") {
+  constructor() ERC721("Analog", "ANALOG") {
     
   }
 
 
-  function mint(string calldata _tokenURI, uint[] calldata _variations) public {
+  function mint(string calldata _tokenURI, uint[] calldata _variations) public onlyOwner {
 
         supply.increment();
 
@@ -518,9 +496,11 @@ contract Changeable is ERC721URIStorage, Ownable{
 
   function changeVariation(uint _tokenID, uint _variationID) public payable {
     require(msg.sender == ownerOf(_tokenID), "You don't own this NFT");
-    if (_variationID == 9) {
-        require(spotContract.balanceOf(_msgSender()) > 9, "not enough spots ");
+	require(msg.value >= cost, "Insufficient funds");
+	require(variation[_tokenID] != _variationID, "NFT already using that variation!");
 
+    if (_variationID == 9) {
+        require(spotContract.balanceOf(_msgSender()) >= minSpots, "not enough spots ");
     }
     else {
       require(spotContract.balanceOf(_msgSender()) > 0 ||
@@ -530,13 +510,14 @@ contract Changeable is ERC721URIStorage, Ownable{
               spot4Contract.balanceOf(_msgSender()) > 0 ||
               spot5Contract.balanceOf(_msgSender()) > 0, "Analog: You don't own a spot!");
       require(validVariations[_tokenID][_variationID], "Invalid Variation!");
- 
- 
     }
 
       variation[_tokenID] = _variationID;
-      require(msg.value >= cost, "Insufficient funds");
+      
+	  (bool success, ) = payable(treasuryWallet).call{ value: msg.value }("");
+	  require(success, "AVAX Transaction: Failed to transfer funds to treasury wallet!");
   }
+
   function setCost(uint256 newCost) public onlyOwner {
 		cost = newCost;
   }
@@ -602,6 +583,10 @@ contract Changeable is ERC721URIStorage, Ownable{
         spot5Address = _spot5Address;
 		spot5Contract = IERC721(spot5Address);
     }
+
+	function setMinSpots(uint256 _newNum) public onlyOwner {
+		minSpots = _newNum;
+	}
 
   function supportsInterface(bytes4 interfaceID) public view override returns(bool) {
         return interfaceID == type(IERC2981Royalties).interfaceId || super.supportsInterface(interfaceID);
